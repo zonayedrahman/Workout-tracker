@@ -18,3 +18,21 @@ export const createUser = async (user : CreateUserParams) => {
         console.error(error);
     }
 }
+
+
+export const findUserId = async (clerkId: string) => {
+    try {
+        await connectToDatabase();
+
+        const found = await User.findOne({
+            clerkId
+        })
+
+        return JSON.parse(JSON.stringify(found));
+
+
+    } catch (error) {
+        
+    }
+
+}

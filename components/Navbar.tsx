@@ -1,10 +1,11 @@
 "use client";
 
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { Dumbbell } from "lucide-react";
+import { Dumbbell, Menu } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { usePathname } from "next/navigation";
+import MobileNav from "./MobileNav";
 
 const Links = [
     {
@@ -24,7 +25,7 @@ const Links = [
 const Navbar = () => {
     const path = usePathname();
 
-    console.log(path);
+    // console.log(path);
     return (
         <div className="z-10 absolute top-4 left-[7.5%] bg-gradient-to-r from-indigo-700/10 via-purple-900/50 to-pink-100/10 h-24 w-[85%] rounded-xl flex items-center justify-between text-white">
             <div className="">
@@ -69,6 +70,14 @@ const Navbar = () => {
                     <div className="mr-12 ml-10">
                         <UserButton />
                     </div>
+                </div>
+
+                {/* mobile nav */}
+                <div className="md:hidden flex items-center  gap-6 pr-8">
+                    <div className="">
+                        <UserButton />
+                    </div>
+                    <MobileNav />
                 </div>
             </SignedIn>
         </div>

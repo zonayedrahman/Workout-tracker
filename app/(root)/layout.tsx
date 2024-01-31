@@ -6,10 +6,9 @@ export default function RootLayout({
     children: React.ReactNode;
 }) {
     return (
-        <main className="h-full bg-secondary ">
+        <main className="h-screen bg-secondary ">
             <Navbar />
             {children}
-            <div className="h-screen"></div>
         </main>
     );
 }
