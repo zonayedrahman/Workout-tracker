@@ -33,7 +33,7 @@ export const getAllWorkouts = async () => {
     }
 }
 
-export const findWorkoutByName = async ( { workoutName} : { workoutName : string} ) => {
+export const findWorkoutByName = async (workoutName : string ) => {
     try {
         await connectToDatabase();
 

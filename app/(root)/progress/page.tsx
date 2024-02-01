@@ -20,9 +20,7 @@ const page = async ({ searchParams }: SearchParamProps) => {
 
     let searchResult = null;
     if (searchParams?.search) {
-        searchResult = await findWorkoutByName({
-            workoutName: searchParams.search as string,
-        });
+        searchResult = await findWorkoutByName(searchParams.search as string);
 
         if (searchResult?.length === 0) {
             searchResult = null;

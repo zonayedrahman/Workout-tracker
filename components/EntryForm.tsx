@@ -15,7 +15,6 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import { toast } from "@/components/ui/use-toast";
 
 import {
     Form,
@@ -27,14 +26,12 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-const formSchema = z.object({
-    user: z.string(),
-    workout: z.string(),
-    date: z.date(),
-    weight: z.string(),
-    reps: z.string(),
-});
+import { createEntry } from "@/lib/database/actions/entry.actions";
+import {
+    formSchema,
+    onSubmitForm,
+} from "@/app/(root)/progress/[workout_name]/newentry/page";
+import { findWorkoutByName } from "@/lib/database/actions/workout.actions";
 
 const EntryForm = ({
     workout_name,
@@ -43,8 +40,6 @@ const EntryForm = ({
     workout_name: string;
     current_user: string;
 }) => {
-    // console.log(current_user);
-
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -56,7 +51,7 @@ const EntryForm = ({
         },
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    async function onSubmit(values: z.infer<typeof formSchema>) {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
 
@@ -72,6 +67,19 @@ const EntryForm = ({
             console.log("Please enter a valid weight and reps");
         }
         console.log(values);
+
+        // onSubmitForm(values);
+        const workoutId = await findWorkoutByName(values.workout);
+        console.log(workoutId);
+
+        const res = await createEntry({
+            user: values.user,
+            workout: workoutId.id,
+            date: values.date,
+            weight: weight as number,
+            reps: reps as number,
+        });
+        console.log(res);
     }
 
     return (
@@ -85,7 +93,7 @@ const EntryForm = ({
                     name="weight"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Weight(lb)</FormLabel>
+                            <FormLabel>Weight (lb)</FormLabel>
                             <FormControl>
                                 <Input placeholder="150..." {...field} />
                             </FormControl>
@@ -106,9 +114,7 @@ const EntryForm = ({
                             <FormControl>
                                 <Input placeholder="5..." {...field} />
                             </FormControl>
-                            <FormDescription>
-                                This is the weight you lifted
-                            </FormDescription>
+                            <FormDescription>Repetition</FormDescription>
                             <FormMessage />
                         </FormItem>
                     )}

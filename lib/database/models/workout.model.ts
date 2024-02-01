@@ -8,7 +8,7 @@ export interface IWorkout {
 }
 
 const workoutSchema = new Schema({
-    name: {type:String, required:true},
+    name: {type:String, required:true, unique:true},
 })
 
 const Workout = models.Workout || model('Workout', workoutSchema)
