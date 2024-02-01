@@ -32,8 +32,8 @@ const formSchema = z.object({
     user: z.string(),
     workout: z.string(),
     date: z.date(),
-    weight: z.number(),
-    reps: z.number(),
+    weight: z.string(),
+    reps: z.string(),
 });
 
 const EntryForm = ({
@@ -43,7 +43,7 @@ const EntryForm = ({
     workout_name: string;
     current_user: string;
 }) => {
-    console.log(current_user);
+    // console.log(current_user);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -51,14 +51,26 @@ const EntryForm = ({
             user: current_user,
             workout: workout_name,
             date: new Date(),
-            weight: 0,
-            reps: 0,
+            weight: `0`,
+            reps: `0`,
         },
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
+
+        const weight = Number(values.weight) || 0;
+        const reps = Number(values.reps) || 0;
+
+        if (
+            weight === 0 ||
+            reps === 0 ||
+            values.weight.includes(".") ||
+            values.reps.includes(".")
+        ) {
+            console.log("Please enter a valid weight and reps");
+        }
         console.log(values);
     }
 
@@ -66,14 +78,47 @@ const EntryForm = ({
         <Form {...form}>
             <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8 w-2/5"
+                className="space-y-8 w-1/5 "
             >
+                <FormField
+                    control={form.control}
+                    name="weight"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Weight(lb)</FormLabel>
+                            <FormControl>
+                                <Input placeholder="150..." {...field} />
+                            </FormControl>
+                            <FormDescription>
+                                This is the weight you lifted
+                            </FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="reps"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Reps</FormLabel>
+                            <FormControl>
+                                <Input placeholder="5..." {...field} />
+                            </FormControl>
+                            <FormDescription>
+                                This is the weight you lifted
+                            </FormDescription>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
                 <FormField
                     control={form.control}
                     name="date"
                     render={({ field }) => (
                         <FormItem className="flex flex-col">
-                            <FormLabel>Date of birth</FormLabel>
+                            <FormLabel>Date of Lift</FormLabel>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <FormControl>
@@ -111,8 +156,7 @@ const EntryForm = ({
                                 </PopoverContent>
                             </Popover>
                             <FormDescription>
-                                Your date of birth is used to calculate your
-                                age.
+                                Day it was performed
                             </FormDescription>
                             <FormMessage />
                         </FormItem>
